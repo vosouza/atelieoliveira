@@ -1,3 +1,5 @@
+import 'package:atelieoliveira/src/data/repository/repository.dart';
+import 'package:atelieoliveira/src/data/service/service.dart';
 import 'package:atelieoliveira/src/feature/home/home_view.dart';
 import 'package:atelieoliveira/src/feature/magazine_detail/magazine_detail.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Service service = Service();
+    final Repository repo = Repository(service: service);
     // Glue the SettingsController to the MaterialApp.
     //
     // The ListenableBuilder Widget listens to the SettingsController for changes.
@@ -74,7 +78,9 @@ class MyApp extends StatelessWidget {
                     return const MagazineDetailView();
                   case HomeView.routeName:
                   default:
-                    return const HomeView();
+                    return HomeView(
+                      repository: repo,
+                    );
                 }
               },
             );

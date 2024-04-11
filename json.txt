@@ -1,0 +1,14 @@
+{
+    "revista":[
+        {
+            "titulo":"Primeira Edição",
+            "imagem":"https://scatologika.com.br/img/capa-001.jpg",
+            "pdf":"https://scatologika.com.br/pdf/Revista%20AtelieOliveira%20001.pdf"
+        },
+        {
+            "titulo":"Primeira Edição",
+            "imagem":"https://scatologika.com.br/img/capa-002.jpg",
+            "pdf":"https://scatologika.com.br/pdf/Revista%20AtelieOliveira%20002.pdf"
+        }
+    ]
+}

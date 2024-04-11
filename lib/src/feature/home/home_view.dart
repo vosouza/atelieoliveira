@@ -1,7 +1,13 @@
+import 'dart:async';
+
+import 'package:atelieoliveira/src/data/model/magazine_model.dart';
+import 'package:atelieoliveira/src/data/repository/repository.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
+  final Repository repository;
   const HomeView({
+    required this.repository,
     super.key,
   });
 
@@ -15,20 +21,13 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   late PageController _pageController;
-
+  late Future<MagazineModel> data;
   int activePage = 1;
-
-  List<String> images = [
-    'assets/images/capa-001.jpg',
-    'assets/images/capa-002.jpg',
-    'assets/images/capa-003.jpg',
-    'assets/images/capa-004.jpg',
-    'assets/images/capa-005.jpg',
-  ];
 
   @override
   void initState() {
     super.initState();
+    data = widget.repository.fetchData();
     _pageController = PageController(viewportFraction: 0.8, initialPage: 1);
     activePage = 1;
   }
@@ -37,26 +36,54 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 150,
-          flexibleSpace: const Image(
-            image: AssetImage('assets/images/banner_topo.jpg'),
-            fit: BoxFit.cover,
+          appBar: AppBar(
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/banner_topo.jpg"),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            toolbarHeight: MediaQuery.of(context).size.height * 0.1,
           ),
-        ),
-        body: contentBody(),
-      ),
+          body: Stack(
+            children: [
+              const Image(
+                image: AssetImage("assets/images/background.jpg"),
+                fit: BoxFit.cover,
+              ),
+              FutureBuilder(
+                  future: data,
+                  builder: (context, future) {
+                    if (future.connectionState == ConnectionState.done) {
+                      var magazine = future.data;
+                      if (magazine != null) {
+                        return contentBody(magazine);
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  }),
+            ],
+          )),
     );
   }
 
-  Widget contentBody() {
+  Widget contentBody(MagazineModel magazines) {
     return Column(
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: indicators(magazines.magazineList.length, activePage),
+        ),
         SizedBox(
           width: MediaQuery.of(context).size.width,
           height: 400,
           child: PageView.builder(
-            itemCount: images.length,
+            itemCount: magazines.magazineList.length,
             pageSnapping: true,
             controller: _pageController,
             onPageChanged: (page) {
@@ -67,18 +94,13 @@ class _HomeViewState extends State<HomeView> {
             itemBuilder: (context, index) {
               bool active = index == activePage;
               return GestureDetector(
-                child: slider(images[index], active),
-                onTap: (){
-                  Navigator.restorablePushNamed(context, "/details");
-                }
-              );
+                  child: slider(magazines.magazineList[index].image, active),
+                  onTap: () {
+                    Navigator.restorablePushNamed(context, "/details");
+                  });
             },
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: indicators(images.length, activePage),
-        )
       ],
     );
   }
@@ -103,7 +125,7 @@ class _HomeViewState extends State<HomeView> {
       curve: Curves.easeInOutCubic,
       margin: EdgeInsets.all(margin),
       decoration:
-          BoxDecoration(image: DecorationImage(image: AssetImage(image))),
-      );
+          BoxDecoration(image: DecorationImage(image: NetworkImage(image))),
+    );
   }
 }

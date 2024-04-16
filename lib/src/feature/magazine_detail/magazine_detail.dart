@@ -1,4 +1,5 @@
 import 'package:atelieoliveira/src/common/progress_bar.dart';
+import 'package:atelieoliveira/src/data/model/magazine_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'dart:io';
@@ -28,6 +29,7 @@ class _MagazineDetailView extends State<MagazineDetailView>
   bool pdfReady = false;
   late PDFViewController _pdfViewController;
   bool loaded = false;
+  EditionModel? edition;
 
   Future<File> getFileFromUrl(String url, {name}) async {
     var fileName = 'testonline';
@@ -59,18 +61,23 @@ class _MagazineDetailView extends State<MagazineDetailView>
   void initState() {
     requestPersmission();
 
-    getFileFromUrl(
-            "https://scatologika.com.br/pdf/Revista%20AtelieOliveira%20005.pdf")
-        .then(
-            (value) => {
-                  setState(() {
-                    urlPDFPath = value.path;
-                    loaded = true;
-                    exists = true;
-                  })
-                }, onError: (error) {
-      exists = false;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      edition = EditionModel.fromJson(
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>);
+      getFileFromUrl(edition!.pdf).then(
+        (value) => {
+          setState(() {
+            urlPDFPath = value.path;
+            loaded = true;
+            exists = true;
+          }),
+        },
+        onError: (error) {
+          exists = false;
+        },
+      );
     });
+
     super.initState();
   }
 
@@ -145,11 +152,11 @@ class _MagazineDetailView extends State<MagazineDetailView>
 
   @override
   Widget build(BuildContext context) {
-    const title = "Revista edição X";
+    String title = edition == null ? "TItulo" : edition!.title;
     if (loaded) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text(title),
+          title: Text(title),
         ),
         body: pdfView(),
         floatingActionButton: fab(),
@@ -157,27 +164,31 @@ class _MagazineDetailView extends State<MagazineDetailView>
     } else {
       if (exists) {
         return Scaffold(
-            appBar: AppBar(
-              title: const Text(title),
-            ),
-            body: Column(
+          appBar: AppBar(
+            title: Text(title),
+          ),
+          body: const Center(
+            child: Column(
               children: [
-                const SizedBox(height: 32,),
-                const Text("Carregando sua revista"),
-                const SizedBox(height: 16,),
-                ModalRoundedProgressBar(handleCallback: (handler) {
-                  if (loaded) {
-                    handler.dismiss();
-                  } else {
-                    handler.show();
-                  }
-                }),
+                SizedBox(
+                  height: 32,
+                ),
+                Text(
+                  "Carregando sua revista",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                CircularProgressIndicator(),
               ],
-            ));
+            ),
+          ),
+        );
       } else {
         return Scaffold(
           appBar: AppBar(
-            title: const Text(title),
+            title: Text(title),
           ),
           body: const Text(
             "Não foi possível encontrar o PFD, por favor tente mais tarde",

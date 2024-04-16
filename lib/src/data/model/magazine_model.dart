@@ -1,22 +1,19 @@
-class MagazineModel{
+class MagazineModel {
   final List<EditionModel> magazineList;
 
-  const MagazineModel({
-    required this.magazineList
-  });
+  const MagazineModel({required this.magazineList});
 
-  factory MagazineModel.fromJson(Map<String, dynamic> json){
+  factory MagazineModel.fromJson(Map<String, dynamic> json) {
     final List<dynamic> jsonPdf = json['revista'];
 
-    return MagazineModel(magazineList: jsonPdf.map((e){
-        return EditionModel.fromJson(e);
-    }).toList()
-    );
-    
+    return MagazineModel(
+        magazineList: jsonPdf.map((e) {
+      return EditionModel.fromJson(e);
+    }).toList());
   }
 }
 
-class EditionModel{
+class EditionModel {
   final String title;
   final String image;
   final String pdf;
@@ -27,11 +24,17 @@ class EditionModel{
     required this.pdf,
   });
 
-  factory EditionModel.fromJson(Map<String, dynamic> data){
+  factory EditionModel.fromJson(Map<String, dynamic> data) {
     final jsonTitle = data['titulo'];
     final jsonImg = data['imagem'];
     final jsonPdf = data['pdf'];
 
     return EditionModel(title: jsonTitle, image: jsonImg, pdf: jsonPdf);
   }
+
+  Map<String, dynamic> toJson() => {
+        'titulo': title,
+        'imagem': image,
+        'pdf': pdf,
+      };
 }

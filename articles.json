@@ -1,0 +1,14 @@
+[
+    {
+        "titulo": "Titulo do artigo",
+        "imagem": "https://scatologika.com.br/img/capa-001.jpg",
+        "descricao": "Esse é um exemplo de artigo com imagem para ser tido como referencia",
+        "site": "https://scatologika.com.br/vinicius-index.html"
+    },
+    {
+        "titulo": "Titulo do artigo",
+        "imagem": "https://scatologika.com.br/img/capa-001.jpg",
+        "descricao": "Esse é um exemplo de artigo com imagem para ser tido como referencia",
+        "site": "https://scatologika.com.br/vinicius-index.html"
+    }
+]  

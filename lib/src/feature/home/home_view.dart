@@ -19,20 +19,16 @@ class HomeView extends StatefulWidget {
   }
 }
 
-class _HomeViewState extends State<HomeView> {
-  List<String> backgroundList = [
-    "assets/images/background.jpg",
-    "assets/images/capa-002.jpg"
-  ];
-
+class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   late List<Widget> pages;
   int pageIndex = 0;
 
   @override
   void initState() {
     super.initState();
+
     pages = [
-      ArticlesView(repository: widget.repository),
+      ArticlesView(repository: widget.repository,),
       MagazineListView(repository: widget.repository),
       AboutView(repository: widget.repository)
     ];
@@ -42,39 +38,55 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: NavigationBar(
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.article),
-              label: 'Materias',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.menu_book_outlined),
-              label: 'Revistas',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.settings),
-              label: 'Sobre',
-            ),
-          ],
-          onDestinationSelected: (index){
-            setState(() {
-              pageIndex = index;
-            });
-          },
-        ),
-        body: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(backgroundList[0]), fit: BoxFit.cover),
+          bottomNavigationBar: NavigationBar(
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.article),
+                label: 'Materias',
               ),
-            ),
-            pages[pageIndex],
-          ],
-        ),
-      ),
+              NavigationDestination(
+                icon: Icon(Icons.menu_book_outlined),
+                label: 'Revistas',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.settings),
+                label: 'Sobre',
+              ),
+            ],
+            onDestinationSelected: (index) {
+              setState(() {
+                pageIndex = index;
+              });
+            },
+          ),
+          body: showContent()),
     );
-  }  
+  }
+
+  Widget showContent() {
+    return Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/images/background.jpg"), fit: BoxFit.cover),
+            ),
+          ),
+          pages[pageIndex],
+        ],
+      );
+      // Lottie.asset(
+      //   height: MediaQuery.of(context).size.height,
+      //   "assets/images/load_animattion.json",
+      //   fit: BoxFit.fill,
+      //   controller: _controller,
+      //   onLoaded: (composition) {
+      //     _controller
+      //       ..duration = composition.duration
+      //       ..forward().then((value) => setState(() {
+      //             isLoading = false;
+      //           }));
+      //   },
+      // );
+  }
 }

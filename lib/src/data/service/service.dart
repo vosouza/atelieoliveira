@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:atelieoliveira/src/data/model/about_model.dart';
 import 'package:atelieoliveira/src/data/model/articles_model.dart';
 import 'package:atelieoliveira/src/data/model/magazine_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class Service {
   Future<MagazineModel> fetchData() async {
@@ -34,5 +36,23 @@ class Service {
     } else {
       throw Exception('Falha ao chamar status code: ${response.statusCode}');
     }
+  }
+
+  Future<File> getPDF(String url, String fileName) async{
+    final response = await http
+        .get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      var bytes = response.bodyBytes;
+      var dir = await getFile();
+      File file = File("${dir.path}/$fileName.pdf");
+      File urlFile = await file.writeAsBytes(bytes);
+      return urlFile;
+    } else {
+      throw Exception('Falha ao chamar status code: ${response.statusCode}');
+    }
+  }
+
+  getFile() async {
+    return getApplicationDocumentsDirectory();
   }
 }

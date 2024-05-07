@@ -1,7 +1,7 @@
+import 'package:atelieoliveira/src/data/database/shared_preferences_impl.dart';
+import 'package:atelieoliveira/src/data/database/shared_preferences_interface.dart';
 import 'package:atelieoliveira/src/data/repository/repository.dart';
 import 'package:atelieoliveira/src/data/service/service.dart';
-import 'package:atelieoliveira/src/feature/about/about_view.dart';
-import 'package:atelieoliveira/src/feature/articles/articles_view.dart';
 import 'package:atelieoliveira/src/feature/home/home_view.dart';
 import 'package:atelieoliveira/src/feature/magazine_detail/magazine_detail.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Service service = Service();
-    final Repository repo = Repository(service: service);
+    final IsharedPreferencs sharedPrefs = SharedPreferencesImpl();
+    final Repository repo = Repository(service: service, sharedPrefs: sharedPrefs);
 
     return MaterialApp(
       restorationScopeId: 'app',
@@ -41,12 +42,7 @@ class MyApp extends StatelessWidget {
           builder: (BuildContext context) {
             switch (routeSettings.name) {
               case MagazineDetailView.routeName:
-                return const MagazineDetailView();
-
-              case ArticlesView.routeName:
-                return ArticlesView(
-                  repository: repo,
-                );
+                return MagazineDetailView(repository: repo,);
 
               case HomeView.routeName:
               default:

@@ -1,14 +1,17 @@
-import 'package:atelieoliveira/src/common/progress_bar.dart';
+import 'dart:io';
+
 import 'package:atelieoliveira/src/data/model/magazine_model.dart';
+import 'package:atelieoliveira/src/data/repository/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MagazineDetailView extends StatefulWidget {
+  final Repository repository;
   const MagazineDetailView({
+    required this.repository,
     super.key,
   });
 
@@ -62,9 +65,8 @@ class _MagazineDetailView extends State<MagazineDetailView>
     requestPersmission();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      edition = EditionModel.fromJson(
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>);
-      getFileFromUrl(edition!.pdf).then(
+      edition = EditionModel.fromJson(ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>);
+      widget.repository.getPDFfromURL(edition!.pdf, edition!.title).then(
         (value) => {
           setState(() {
             urlPDFPath = value.path;
@@ -77,6 +79,20 @@ class _MagazineDetailView extends State<MagazineDetailView>
         },
       );
     });
+
+    //   getFileFromUrl(edition!.pdf).then(
+    //     (value) => {
+    //       setState(() {
+    //         urlPDFPath = value.path;
+    //         loaded = true;
+    //         exists = true;
+    //       }),
+    //     },
+    //     onError: (error) {
+    //       exists = false;
+    //     },
+    //   );
+    // });
 
     super.initState();
   }

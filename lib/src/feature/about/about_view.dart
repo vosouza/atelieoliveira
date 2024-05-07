@@ -67,30 +67,28 @@ class _AboutViewState extends State<AboutView> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Container(
-          child: Flexible(
-            child: Column(
-              children: [
-                Text(data.title),
-                const Text("Contado:"),
-                Text(data.address),
-                Text(data.cep),
-                Text(data.number),
-                GestureDetector(
-                  child: const Text("Termos de serviço"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ArticlesWebView(
-                          url: data.termsUrl,
-                        ),
+        child: Flexible(
+          child: Column(
+            children: [
+              Text(data.title),
+              const Text("Contado:"),
+              Text(data.address),
+              Text(data.cep),
+              Text(data.number),
+              GestureDetector(
+                child: const Text("Termos de serviço"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ArticlesWebView(
+                        url: data.termsUrl,
                       ),
-                    );
-                  },
-                ),
-              ],
-            ),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),

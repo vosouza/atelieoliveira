@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class ArticlesView extends StatefulWidget {
   final Repository repository;
+
   const ArticlesView({
     required this.repository,
     super.key,
@@ -57,18 +58,7 @@ class _ArticleViewState extends State<ArticlesView> {
                 );
               }
             } else {
-              return const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(32),
-                  child: Center(
-                    child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ),
-              );
+              return const SliverToBoxAdapter();
             }
           },
         ),
@@ -114,7 +104,7 @@ class _ArticleViewState extends State<ArticlesView> {
                       const SizedBox(
                         height: 8,
                       ),
-                      Text(article.description)
+                      Text(article.description),
                     ],
                   ),
                 ),
